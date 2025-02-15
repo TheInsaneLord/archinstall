@@ -1,0 +1,12 @@
+# remove-orphans
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Operation = Remove
+Type = Package
+Target = *
+
+[Action]
+Description = Removing orphaned packages...
+When = PostTransaction
+Exec = /usr/bin/pacman -Rns $(pacman -Qdtq) --noconfirm
