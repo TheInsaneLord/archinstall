@@ -1,4 +1,3 @@
-cat <<EOF > README.md
 # Arch Install Script
 
 ## By The Insane Lord
