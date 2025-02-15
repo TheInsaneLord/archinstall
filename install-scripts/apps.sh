@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -e  # Exit script on error
+
+echo "Installing Default Applications..."
+
+# Install core applications
+main_apps=(konsole firefox discord steam kate dolphin neofetch git bash-completion flatpak bashtop pacman-contrib)
+
+sudo pacman -S --noconfirm "${main_apps[@]}"
+
+# Bluetooth support
+sudo pacman -S --noconfirm bluez bluez-utils bluez-deprecated-tools
+sudo systemctl enable bluetooth.service
+
+# Printer support
+sudo pacman -S --noconfirm system-config-printer cups cups-pdf
+sudo systemctl enable cups.service
+
+echo "Default application installation complete."
+echo " --- Notes ---"
+echo "If you need printer access, add the user to the 'lp' group:"
+echo "sudo usermod -aG lp <username>"
+
+# Prompt for Flatpak installation
+read -p "Do you want to install Flatpaks? (Y/n) " flatpak_choice
+if [[ "$flatpak_choice" =~ ^[Yy]$ ]] || [[ -z "$flatpak_choice" ]]; then
+  echo "Installing Flatpak packages..."
+  
+  # Ensure Flatpak is initialized
+  sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+
+  # Install Flatpak applications
+  flatpak install -y flathub com.discordapp.Discord
+  flatpak install -y flathub com.google.Chrome
+  flatpak install -y flathub org.prismlauncher.PrismLauncher
+  flatpak install -y flathub com.spotify.Client
+  flatpak install -y flathub org.inkscape.Inkscape
+  flatpak install -y flathub org.kde.krita
+  flatpak install -y flathub com.obsproject.Studio
+  flatpak install -y flathub com.obsproject.Studio.Plugin.CompositeBlur
+  flatpak install -y flathub com.obsproject.Studio.Plugin.AitumMultistream
+  flatpak install -y flathub com.obsproject.Studio.Plugin.MoveTransition
+
+  echo "Flatpak installation complete."
+else
+  echo "Flatpak installation skipped."
+fi
