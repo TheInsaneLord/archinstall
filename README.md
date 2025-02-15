@@ -24,7 +24,7 @@ Before running this script, ensure:
 ## 🛠️ Installation & Usage
 ### 1️⃣ Clone the Repository
 ```sh
-git clone https://github.com/YOUR_GITHUB_USERNAME/arch-install.git
+git clone https://github.com/TheInsaneLord/arch-install.git
 cd arch-install
 ```
 
