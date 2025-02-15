@@ -1,0 +1,10 @@
+# archlinux-keyring
+[Trigger]
+Operation = Upgrade
+Type = Package
+Target = archlinux-keyring
+
+[Action]
+Description = Updating Arch Linux keyring...
+When = PreTransaction
+Exec = /usr/bin/pacman -Sy --noconfirm archlinux-keyring
