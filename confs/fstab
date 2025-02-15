@@ -1,0 +1,12 @@
+
+# custome drives
+
+# storage
+UUID=FAC65C86C65C4553   /drives/storage   ntfs-3g         rw,uid=1000,gid=984,exec,users
+# games
+UUID=A896F8F496F8C3BA   /drives/games   ntfs-3g         uid=1000,gid=984,rw,exec 0 0
+# vms
+#UUID=4CE0EE69E0EE592A   /drives/virtual-machine/       ntfs-3g
+
+# samba drive
+//192.168.0.6/oggshare /mnt/oggshare cifs credentials=/etc/samba-credentials,uid=owen,gid=users,iocharset=utf8,noperm,_netdev 0 0
