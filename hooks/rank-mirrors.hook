@@ -1,0 +1,11 @@
+# rank-mirrors
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = pacman-mirrorlist
+
+[Action]
+Description = Ranking the fastest mirrors...
+When = PostTransaction
+Exec = /bin/sh -c 'rankmirrors -n 10 /etc/pacman.d/mirrorlist.bak | tee /etc/pacman.d/mirrorlist'
