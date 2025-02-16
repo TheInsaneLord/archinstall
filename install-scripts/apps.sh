@@ -10,7 +10,7 @@ main_apps=(konsole firefox discord steam kate dolphin neofetch git bash-completi
 sudo pacman -S --noconfirm "${main_apps[@]}"
 
 # Install optional apps
-opt_apps=(traceroute libreoffice-fresh p7zip python3 python-pip)
+opt_apps=(traceroute libreoffice-fresh p7zip python3 python-pip filezilla)
 
 read -p "Do you want to install Flatpaks? (Y/n) " opt_apps_choice
 if [[ "$opt_apps_choice" =~ ^[Yy]$ ]] || [[ -z "$opt_apps_choice" ]]; then
