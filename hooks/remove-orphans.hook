@@ -9,4 +9,4 @@ Target = *
 [Action]
 Description = Removing orphaned packages...
 When = PostTransaction
-Exec = /bin/sh -c 'pacman -Qdtq && pacman -Rns $(pacman -Qdtq) --noconfirm || true'
+Exec = /usr/bin/sh -c 'pacman -Qdtq | xargs -r pacman -Rns --noconfirm'
