@@ -4,7 +4,7 @@ set -e  # Exit script on error
 
 echo 
 echo "This sets up the following items and only these items"
-echo "- fstab secondery drives."
+echo "- fstab secondary drives."
 echo "- Network settings."
 echo "- vconsole.conf"
 echo 
@@ -20,7 +20,7 @@ sudo pacman -S --noconfirm samba
 sudo cp confs/samba-credentials /etc/samba-credentials
 
 # setup network
-sudo pacman -S networkmanager dhcpcd
+sudo pacman -S --noconfirm networkmanager dhcpcd
 sudo system enable NetworkManager.service  
 sudo system enable dhcpcd@enp3s0.service
 
