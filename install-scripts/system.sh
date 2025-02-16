@@ -87,9 +87,30 @@ echo "Network setup complete!"
 echo "Setting up nano as default editor"
 sudo pacman -S --noconfirm nano
 echo "EDITOR=/usr/bin/nano" >> /etc/environment
-echo "VISUAL=/usr/bin/nano" >> /etc/environment
+echo "VISUAL=/usr/bin/nano" >> /etc/environmentif [[ -f "confs/samba-credentials" ]]; then
+    echo "Copying Samba credentials..."
+    sudo install -m 600 confs/samba-credentials /etc/samba-credentials
+else
+    echo "Warning: Samba credentials file not found! Skipping..."
+fi
 
 echo "done."
+
+ 
+read -p "Do you need sg-module for MakeMKV? (Y/n) " sgmodule_choice
+if [[ "$sgmodule_choice" =~ ^[Yy]$ ]] || [[ -z "$sgmodule_choice" ]]; then
+    if [[ -f "confs/sg-module-load.service" ]]; then
+        echo "Installing sg-module-load.service..."
+        sudo install -m 644 confs/sg-module-load.service /etc/systemd/system/sg-module-load.service
+        sudo systemctl enable sg-module-load.service
+        sudo systemctl daemon-reload
+        echo "sg-module-load.service has been installed and enabled."
+    else
+        echo "Error: confs/sg-module-load.service not found! Skipping installation."
+    fi
+else
+    echo "Skipping sg-module."
+fi
 
 
 echo "Installation and configuration complete!"
