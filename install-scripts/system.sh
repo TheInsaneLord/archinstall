@@ -84,5 +84,12 @@ nmcli connection show --active
 
 echo "Network setup complete!"
 
+echo "Setting up nano as default editor"
+sudo pacman -S --noconfirm nano
+echo "EDITOR=/usr/bin/nano" >> /etc/environment
+echo "VISUAL=/usr/bin/nano" >> /etc/environment
+
+echo "done."
+
 
 echo "Installation and configuration complete!"
