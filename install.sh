@@ -4,29 +4,74 @@ set -e  # Exit script on error
 
 echo "* Arch Install Script *"
 echo "* By The Insane Lord *"
-echo "* This script will configure your Arch system. "
+echo "* This script will configure your Arch system. *"
+echo "* Make sure this script is ran after running arch-chroot *"
 echo "* Version: 1.0 - Updated last: 2025 *"
 
-# Ensure install scripts are executable
+echo "Available scripts."
+ls  install-scripts
+echo " "
+
+# Check if running inside arch-chroot
+if ! grep -q "/proc/1/mounts" /proc/mounts; then
+    echo "Error: This script must be run inside arch-chroot."
+    exit 1
+fi
+
+# Ensure the install-scripts directory exists
+if [[ ! -d "install-scripts" ]]; then
+    echo "Error: 'install-scripts' directory is missing!"
+    exit 1
+fi
+
+# Ensure all install scripts are executable
 chmod +x install-scripts/*.sh
 
-# Ask if the user wants default Pacman hooks
-read -p "Do you want to install default Pacman hooks? (Y/n) " hooks_choice
-if [[ "$hooks_choice" =~ ^[Yy]$ ]] || [[ -z "$hooks_choice" ]]; then
-    ./install-scripts/setup-hooks.sh
-fi
-
 # Ask if the user wants to configure system files
-read -p "Do you want to configure system files (fstab, console settings)? (Y/n) " sys_choice
-if [[ "$sys_choice" =~ ^[Yy]$ ]] || [[ -z "$sys_choice" ]]; then
-    ./install-scripts/setup-system.sh
+if [[ -f "install-scripts/system.sh" ]]; then
+    read -p "Do you want to configure system files (fstab, console settings)? (Y/n) " sys_choice
+    if [[ "$sys_choice" =~ ^[Yy]$ ]] || [[ -z "$sys_choice" ]]; then
+        ./install-scripts/system.sh
+    fi
+else
+    echo "Warning: system.sh not found, skipping system configuration."
 fi
 
-# Example query (Replace [query] and [script-name] as needed)
-# read -p "Ask question here? (Y/n) " [query]_choice
-# if [[ "$[query]_choice" =~ ^[Yy]$ ]] || [[ -z "$[query]_choice" ]]; then
-#     ./install-scripts/[script-name].sh
-# fi
+# Ask if the user wants to configure GUI
+if [[ -f "install-scripts/gui.sh" ]]; then
+    read -p "Do you want to configure GUI? (Y/n) " gui_choice
+    if [[ "$gui_choice" =~ ^[Yy]$ ]] || [[ -z "$gui_choice" ]]; then
+        ./install-scripts/gui.sh
+    fi
+else
+    echo "Warning: gui.sh not found, skipping GUI setup."
+fi
+
+# Ask if the user wants default Pacman hooks
+if [[ -f "install-scripts/hooks.sh" ]]; then
+    read -p "Do you want to install default Pacman hooks? (Y/n) " hooks_choice
+    if [[ "$hooks_choice" =~ ^[Yy]$ ]] || [[ -z "$hooks_choice" ]]; then
+        ./install-scripts/hooks.sh
+    fi
+else
+    echo "Warning: hooks.sh not found, skipping hooks setup."
+fi
+
+# Ask if the user wants to install default applications
+if [[ -f "install-scripts/apps.sh" ]]; then
+    read -p "Do you want to install default applications? (Y/n) " apps_choice
+    if [[ "$apps_choice" =~ ^[Yy]$ ]] || [[ -z "$apps_choice" ]]; then
+        ./install-scripts/apps.sh
+    fi
+else
+    echo "Warning: apps.sh not found, skipping application installation."
+fi
+
+#Example query (Replace [query] and [script-name] as needed)
+#read -p "Ask question here? (Y/n) " [query]_choice
+#if [[ "$[query]_choice" =~ ^[Yy]$ ]] || [[ -z "$[query]_choice" ]]; then
+#    ./install-scripts/[script-name].sh
+#fi
 
 echo
 echo "Installation and configuration complete!"
