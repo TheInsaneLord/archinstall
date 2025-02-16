@@ -2,17 +2,20 @@
 
 set -e  # Exit script on error
 
-echo 
-echo "This sets up the following items and only these items"
+echo
+echo "This sets up the following items and only these items:"
 echo "- fstab secondary drives."
 echo "- Network settings."
 echo "- vconsole.conf"
-echo 
+echo "- Nano as default editor"
+echo "- Optional sg-module for MakeMKV"
+echo
 
-# vconsole
-sudo echo KEYMAP=uk > /etc/vconsole.conf
+# Configure vconsole.conf
+echo "Setting keyboard layout to UK..."
+echo "KEYMAP=uk" | sudo tee /etc/vconsole.conf > /dev/null
 
-# add fstab drives
+# Append fstab entries for secondary drives
 if [[ -f "confs/fstab" ]]; then
     echo "Appending secondary drives to fstab..."
     cat confs/fstab | sudo tee -a /etc/fstab > /dev/null
@@ -20,7 +23,7 @@ else
     echo "Warning: 'confs/fstab' not found! Skipping fstab setup."
 fi
 
-# samba setup
+# Samba setup
 echo "Installing Samba for Windows file sharing..."
 sudo pacman -S --noconfirm samba
 if [[ -f "confs/samba-credentials" ]]; then
@@ -30,23 +33,22 @@ else
     echo "Warning: Samba credentials file not found! Skipping..."
 fi
 
-# setup network
-#!/bin/bash
-
 # Function to list available network interfaces (excluding loopback)
 list_interfaces() {
     ip -o link show | awk -F': ' '{print $2}' | grep -v "lo"
 }
 
+# Network setup
 echo "Setting up network configuration..."
 
 # List available network interfaces
+echo "Available network interfaces:"
 list_interfaces
 
 # Prompt user for the primary NIC (Internet)
 read -p "Enter the primary network interface (for internet access): " PRIMARY_NIC
 
-# Update package list and install necessary network packages
+# Install NetworkManager
 echo "Installing NetworkManager..."
 sudo pacman -S --noconfirm networkmanager
 
@@ -61,7 +63,7 @@ sudo nmcli connection modify "$PRIMARY_NIC" ipv4.method auto ipv4.route-metric 1
 sudo nmcli connection modify "$PRIMARY_NIC" connection.autoconnect yes
 sudo nmcli connection up "$PRIMARY_NIC"
 
-# Configure all other NICs as secondary (Server/Local Networks)
+# Configure additional network interfaces
 echo "Configuring additional network interfaces..."
 for NIC in $(list_interfaces); do
     # Skip the primary NIC
@@ -77,26 +79,20 @@ for NIC in $(list_interfaces); do
     sudo nmcli connection up "$NIC"
 done
 
-# Verify the network setup
+# Verify network setup
 echo "Checking network configuration..."
 ip route show
 nmcli connection show --active
 
 echo "Network setup complete!"
 
-echo "Setting up nano as default editor"
+# Setting up nano as default editor
+echo "Setting nano as the default editor..."
 sudo pacman -S --noconfirm nano
-echo "EDITOR=/usr/bin/nano" >> /etc/environment
-echo "VISUAL=/usr/bin/nano" >> /etc/environmentif [[ -f "confs/samba-credentials" ]]; then
-    echo "Copying Samba credentials..."
-    sudo install -m 600 confs/samba-credentials /etc/samba-credentials
-else
-    echo "Warning: Samba credentials file not found! Skipping..."
-fi
+echo "EDITOR=/usr/bin/nano" | sudo tee -a /etc/environment > /dev/null
+echo "VISUAL=/usr/bin/nano" | sudo tee -a /etc/environment > /dev/null
 
-echo "done."
-
- 
+# Optional sg-module for MakeMKV
 read -p "Do you need sg-module for MakeMKV? (Y/n) " sgmodule_choice
 if [[ "$sgmodule_choice" =~ ^[Yy]$ ]] || [[ -z "$sgmodule_choice" ]]; then
     if [[ -f "confs/sg-module-load.service" ]]; then
@@ -104,6 +100,7 @@ if [[ "$sgmodule_choice" =~ ^[Yy]$ ]] || [[ -z "$sgmodule_choice" ]]; then
         sudo install -m 644 confs/sg-module-load.service /etc/systemd/system/sg-module-load.service
         sudo systemctl enable sg-module-load.service
         sudo systemctl daemon-reload
+        sudo systemctl restart sg-module-load.service
         echo "sg-module-load.service has been installed and enabled."
     else
         echo "Error: confs/sg-module-load.service not found! Skipping installation."
@@ -112,5 +109,5 @@ else
     echo "Skipping sg-module."
 fi
 
-
+echo
 echo "Installation and configuration complete!"
