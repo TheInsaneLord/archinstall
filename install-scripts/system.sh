@@ -15,6 +15,9 @@ sudo echo KEYMAP=uk > /etc/vconsole.conf
 # add fstab drives
 echo >> /etc/fstab
 
+# samba setup
+sudo pacman -S --noconfirm samba
+sudo cp confs/samba-credentials /etc/samba-credentials
 
 # setup network
 sudo pacman -S networkmanager dhcpcd
