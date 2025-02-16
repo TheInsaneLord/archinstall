@@ -22,6 +22,5 @@ sudo cp confs/samba-credentials /etc/samba-credentials
 # setup network
 sudo pacman -S --noconfirm networkmanager dhcpcd
 sudo system enable NetworkManager.service  
-sudo system enable dhcpcd@enp3s0.service
 
 echo "Installation and configuration complete!"
