@@ -1,0 +1,11 @@
+[Unit]
+Description=Load SG Kernel Module
+After=systemd-modules-load.service
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/modprobe sg
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
