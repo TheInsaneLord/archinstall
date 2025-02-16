@@ -5,10 +5,20 @@ set -e  # Exit script on error
 echo "Installing Default Applications..."
 
 # Install core applications
-main_apps=(konsole firefox discord steam kate dolphin neofetch git bash-completion flatpak bashtop pacman-contrib man)
+main_apps=(konsole firefox discord steam kate dolphin neofetch git bash-completion flatpak bashtop pacman-contrib man ufw)
 
 sudo pacman -S --noconfirm "${main_apps[@]}"
 
+# Install optional apps
+opt_apps=(traceroute libreoffice-fresh p7zip python3 python-pip)
+
+read -p "Do you want to install Flatpaks? (Y/n) " opt_apps_choice
+if [[ "$opt_apps_choice" =~ ^[Yy]$ ]] || [[ -z "$opt_apps_choice" ]]; then
+  sudo pacman -S --noconfirm "${opt_apps[0]}"
+else
+  echo "optional apps skipped."
+fi
+  
 # Bluetooth support
 sudo pacman -S --noconfirm bluez bluez-utils bluez-deprecated-tools
 sudo systemctl enable bluetooth.service
