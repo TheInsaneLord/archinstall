@@ -5,7 +5,7 @@ set -e  # Exit script on error
 echo "Installing Default Applications..."
 
 # Install core applications
-main_apps=(konsole firefox discord steam kate dolphin neofetch git bash-completion flatpak bashtop pacman-contrib)
+main_apps=(konsole firefox discord steam kate dolphin neofetch git bash-completion flatpak bashtop pacman-contrib man)
 
 sudo pacman -S --noconfirm "${main_apps[@]}"
 
