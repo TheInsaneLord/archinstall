@@ -3,9 +3,12 @@
 set -e  # Exit script on error
 
 echo "Installing Default Applications..."
-echo "Setting pacman.conf for apps"
+echo "Copying the pacman.conf"
 
 sudo cp -v confs/pacman.conf /etc/pacman.conf
+
+echo "Refreshing all package databases (including multilib)…"
+pacman -Syy --noconfirm
 
 # Install core applications
 main_apps=(konsole firefox discord steam kate dolphin neofetch git bash-completion flatpak bashtop pacman-contrib man ufw)
