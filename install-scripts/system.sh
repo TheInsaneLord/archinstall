@@ -33,7 +33,7 @@ else
     echo "Warning: Samba credentials file not found! Skipping..."
 fi
 
-<<comment
+: <<'COMMENT'
 # Function to list available network interfaces (excluding loopback)
 list_interfaces() {
     ip -o link show | awk -F': ' '{print $2}' | grep -v "lo"
@@ -48,7 +48,8 @@ list_interfaces
 
 # Prompt user for the primary NIC (Internet)
 read -p "Enter the primary network interface (for internet access): " PRIMARY_NIC
-comment
+COMMENT
+
 # Install NetworkManager
 echo "Installing NetworkManager..."
 sudo pacman -S --noconfirm networkmanager
@@ -57,7 +58,7 @@ sudo pacman -S --noconfirm networkmanager
 echo "Enabling NetworkManager..."
 sudo systemctl enable NetworkManager.service
 
-<<comment
+: <<'COMMENT'
 # Configure PRIMARY NIC (Main Internet Connection)
 echo "Setting up $PRIMARY_NIC as the default internet connection..."
 sudo nmcli connection add type ethernet ifname "$PRIMARY_NIC" con-name "$PRIMARY_NIC"
@@ -87,7 +88,7 @@ ip route show
 nmcli connection show --active
 
 echo "Network setup complete!"
-comment
+COMMENT
 
 # Setting up nano as default editor
 echo "Setting nano as the default editor..."
