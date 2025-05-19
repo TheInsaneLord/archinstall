@@ -48,15 +48,16 @@ list_interfaces
 
 # Prompt user for the primary NIC (Internet)
 read -p "Enter the primary network interface (for internet access): " PRIMARY_NIC
-
+comment
 # Install NetworkManager
 echo "Installing NetworkManager..."
 sudo pacman -S --noconfirm networkmanager
 
 # Ensure NetworkManager starts on boot
 echo "Enabling NetworkManager..."
-sudo systemctl enable --now NetworkManager.service
+sudo systemctl enable NetworkManager.service
 
+<<comment
 # Configure PRIMARY NIC (Main Internet Connection)
 echo "Setting up $PRIMARY_NIC as the default internet connection..."
 sudo nmcli connection add type ethernet ifname "$PRIMARY_NIC" con-name "$PRIMARY_NIC"
