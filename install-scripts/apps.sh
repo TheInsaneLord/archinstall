@@ -7,7 +7,6 @@ echo "Setting pacman.conf for apps"
 
 sudo cp -v confs/pacman.conf
 
-
 # Install core applications
 main_apps=(konsole firefox discord steam kate dolphin neofetch git bash-completion flatpak bashtop pacman-contrib man ufw)
 
