@@ -12,10 +12,11 @@ echo "Available scripts."
 ls  install-scripts
 echo " "
 
-# Check if running inside arch-chroot
-if ! grep -q "/proc/1/mounts" /proc/mounts; then
-    echo "Error: This script must be run inside arch-chroot."
-    exit 1
+# warn if not in arch-chroot, but don’t bail out
+if ! grep -q '/mnt ' /proc/1/mountinfo; then
+  echo "⚠️  Warning: you’re not inside an arch-chroot—some operations may fail."
+  echo "   Proceeding anyway; make sure you’ve already run arch-chroot /mnt"
+  # no exit here, script will continue
 fi
 
 # Ensure the install-scripts directory exists
