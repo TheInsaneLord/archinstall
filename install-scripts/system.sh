@@ -33,6 +33,7 @@ else
     echo "Warning: Samba credentials file not found! Skipping..."
 fi
 
+<<comment
 # Function to list available network interfaces (excluding loopback)
 list_interfaces() {
     ip -o link show | awk -F': ' '{print $2}' | grep -v "lo"
@@ -85,6 +86,7 @@ ip route show
 nmcli connection show --active
 
 echo "Network setup complete!"
+comment
 
 # Setting up nano as default editor
 echo "Setting nano as the default editor..."
