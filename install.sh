@@ -6,7 +6,7 @@ echo "* Arch Install Script *"
 echo "* By The Insane Lord *"
 echo "* This script will configure your Arch system. *"
 echo "* Make sure this script is ran after running arch-chroot *"
-echo "* Version: 1.0 - Updated last: 2025 *"
+echo "* Version: 2.0 - Updated last: 2025 *"
 
 echo "Available scripts."
 ls  install-scripts
@@ -14,7 +14,7 @@ echo " "
 
 # warn if not in arch-chroot, but don’t bail out
 if ! grep -q '/mnt ' /proc/1/mountinfo; then
-  echo "⚠️  Warning: you’re not inside an arch-chroot—some operations may fail."
+  echo "⚠Warning: you’re not inside an arch-chroot—some operations may fail."
   echo "   Proceeding anyway; make sure you’ve already run arch-chroot /mnt"
   # no exit here, script will continue
 fi
@@ -27,6 +27,16 @@ fi
 
 # Ensure all install scripts are executable
 chmod +x install-scripts/*.sh
+
+# Ask if the user wants the bootloader installed
+if [[ -f "install-scripts/boot.sh" ]]; then
+    read -p "Do you want to install boot loader? (Y/n) " boot_choice
+    if [[ "$boot_choice" =~ ^[Yy]$ ]] || [[ -z "$boot_choice" ]]; then
+        ./install-scripts/boot.sh
+    fi
+else
+    echo "Warning: boot.sh not found, skipping boot loader setup."
+fi
 
 # Ask if the user wants to configure system files
 if [[ -f "install-scripts/system.sh" ]]; then
