@@ -113,5 +113,31 @@ else
     echo "Skipping sg-module."
 fi
 
+
+# Base system conf I.e. users and system settings
+read -p "Create a main user? (Y/n) " user_choice
+if [[ "$user_choice" =~ ^[Yy]$ ]] || [[ -z "$user_choice" ]]; then
+  # Prompt for username, default to "mypcuser"
+  read -p "Enter main username [mypcuser]: " main_user
+  main_user=${main_user:-mypcuser}
+
+  # Create the user, its own group, and add to wheel/storage/power
+  useradd -m -U -G wheel,storage,power -s /bin/bash "$main_user"
+
+  echo "Set password for $main_user:"
+  passwd "$main_user"
+
+  # Ensure sudoers wheel group is enabled
+  sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
+else
+  echo "Skipping user creation."
+fi
+
+# Prompt for a hostname, default to "mypc-01"
+read -p "Enter hostname [mypc-01]: " host
+host=${host:-mypc-01}
+
+echo "$host" > /etc/hostname
+
 echo
 echo "Installation and configuration complete!"
