@@ -12,6 +12,14 @@ echo "Available scripts."
 ls  install-scripts
 echo " "
 
+#Example query (Replace [query] and [script-name] as needed)
+read -p "Do you have an Nvidia GPU? (Y/n) " [query]_choice
+if [[ "$[query]_choice" =~ ^[Yy]$ ]] || [[ -z "$[query]_choice" ]]; then
+    nvidia_gpu=true
+else
+    nvidia_gpu=false
+fi
+
 # warn if not in arch-chroot, but don’t bail out
 if ! grep -q '/mnt ' /proc/1/mountinfo; then
   echo "⚠Warning: you’re not inside an arch-chroot—some operations may fail."
