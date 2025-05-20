@@ -1,76 +1,29 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
 
-# boot.sh - Install and configure bootloader (GRUB or systemd-boot)
+# Later, in system.sh or boot.sh, you can do:
+# if $nvidia_gpu; then
+#   echo "Loading NVIDIA prerequisites…"
+#   pacman -S --noconfirm nvidia nvidia-utils
+#   # or add the kernel param in grub… 
+# fi
+# set up bootloader
+# systemd-boot
+bootctl install
+touch /boot/loader/entries/def.conf
+# def.conf
+echo "title Arch Linux" >>
+echo "linux /vmlinuz-linux" >>
+echo "initrd /amd-ucode.img" >>
+echo "initrd /initramfs-linux.img" >>
 
-# Prompt for bootloader choice (default: GRUB)
-read -rp "Select bootloader - GRUB or systemd-boot [GRUB]: " boot_choice
-boot_choice=${boot_choice:-GRUB}
+lsblk
+read -p "select a disk (sda1)" disk
 
-# Normalize and validate choice
-boot_norm=$(echo "$boot_choice" | tr '[:upper:]' '[:lower:]')
-if [[ "$boot_norm" != "grub" && "$boot_norm" != "systemd-boot" ]]; then
-  echo "Invalid choice '$boot_choice', defaulting to GRUB."
-  boot_norm="grub"
-fi
+# add boot drive to def.conf
+echo "options root=PARTUUID=$(blkid -s PARTUUID -o value /dev/$disk) rw nvidia-drm.modeset=1" >> /boot/loader/entries/def.conf
 
-echo "Bootloader selected: ${boot_norm^}"
-
-# Determine root partition from fstab
-ROOT_PART=$(awk '$2=="/" {print $1; exit}' /etc/fstab)
-
-case "$boot_norm" in
-  systemd-boot)
-    echo "Installing systemd-boot..."
-    pacman -S --noconfirm systemd-boot
-    bootctl --path=/boot install
-
-    # Create loader config
-    cat <<EOF > /boot/loader/loader.conf
-    default  arch
-    timeout  5
-EOF
-
-    # Determine PARTUUID for root
-    PARTUUID=$(blkid -s PARTUUID -o value "$ROOT_PART")
-
-    # Create entry
-    cat <<EOF > /boot/loader/entries/arch.conf
-    title   Arch Linux
-    linux   /vmlinuz-linux
-    initrd  /amd-ucode.img
-    initrd  /initramfs-linux.img
-    options root=PARTUUID=${PARTUUID} rw nvidia-drm.modeset=1
-EOF
-    ;;
-
-  grub)
-    echo "Installing GRUB..."
-    pacman -S --noconfirm grub efibootmgr dosfstools os-prober mtools
-
-    # Detect EFI vs BIOS via efivar
-    if efivar -l > /dev/null 2>&1; then
-      echo "UEFI environment detected."
-      ESP_MNT="/boot"
-      grub-install --target=x86_64-efi \
-        --efi-directory="$ESP_MNT" \
-        --bootloader-id=GRUB --recheck
-    else
-      echo "Legacy BIOS environment detected."
-      # Derive disk from ROOT_PART (e.g. /dev/sda3 -> /dev/sda, or /dev/vda2 -> /dev/vda)
-      BOOT_DISK="$(lsblk -no PKNAME "$ROOT_PART")"
-      BOOT_DISK="/dev/$BOOT_DISK"
-      echo "Using disk $BOOT_DISK for MBR install."
-      grub-install --target=i386-pc "$BOOT_DISK"
-    fi
-
-    # Add NVIDIA modeset kernel parameter
-    sed -i 's|^GRUB_CMDLINE_LINUX="\(.*\)"|GRUB_CMDLINE_LINUX="\1 nvidia-drm.modeset=1"|' /etc/default/grub
-
-    # Generate GRUB configuration
-    grub-mkconfig -o /boot/grub/grub.cfg
-    ;;
-
-esac
-
-echo "Bootloader setup complete."
+# GRUB
+pacman -S grub efibootmgr dostools os-prober mtools
+nano /etc/default/grub # add GRUB_CMDLINE_LINUX="nvidia-drm.modeset=1"
+grub-install  --target=x86_64-efi --bootloader-id=grub_efi --efi-directory=/boot/ --recheck
+grub-mkconfig -o /boot/grub/grub.cfg
