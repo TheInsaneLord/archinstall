@@ -12,13 +12,17 @@ echo "Available scripts."
 ls  install-scripts
 echo " "
 
-#Example query (Replace [query] and [script-name] as needed)
-read -p "Do you have an Nvidia GPU? (Y/n) " [query]_choice
-if [[ "$[query]_choice" =~ ^[Yy]$ ]] || [[ -z "$[query]_choice" ]]; then
-    nvidia_gpu=true
+#Ask user if they have nvida GPU
+read -rp "Do you have an NVIDIA GPU? (Y/n) " nvidia_choice
+nvidia_choice=${nvidia_choice:-Y}
+if [[ "${nvidia_choice,,}" == "y" ]]; then
+  nvidia_gpu=true
 else
-    nvidia_gpu=false
+  nvidia_gpu=false
 fi
+
+export nvidia_gpu
+echo "nvidia_gpu is set to: $nvidia_gpu"
 
 # warn if not in arch-chroot, but don’t bail out
 if ! grep -q '/mnt ' /proc/1/mountinfo; then
