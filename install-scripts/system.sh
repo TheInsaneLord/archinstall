@@ -129,7 +129,7 @@ if [[ "$user_choice" =~ ^[Yy]$ ]] || [[ -z "$user_choice" ]]; then
 
   # Ensure sudoers wheel group is enabled
   #sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
-  sudo cp -v confs/sudoers /etc/sudoers
+  sudo cp -v confs/sudoers /etc/sudoers # Copy default sudoers file and overwrite old one 
 else
   echo "Skipping user creation."
 fi
