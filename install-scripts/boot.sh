@@ -4,26 +4,27 @@
 # if $nvidia_gpu; then
 #   echo "Loading NVIDIA prerequisites…"
 #   pacman -S --noconfirm nvidia nvidia-utils
-#   # or add the kernel param in grub… 
+#   # or add the kernel param in grub…
 # fi
-# set up bootloader
-# systemd-boot
+
+# Set up bootloader
 bootctl install
 touch /boot/loader/entries/def.conf
+
 # def.conf
-echo "title Arch Linux" >>
-echo "linux /vmlinuz-linux" >>
-echo "initrd /amd-ucode.img" >>
-echo "initrd /initramfs-linux.img" >>
+echo "title Arch Linux" >> /boot/loader/entries/def.conf
+echo "linux /vmlinuz-linux" >> /boot/loader/entries/def.conf
+echo "initrd /amd-ucode.img" >> /boot/loader/entries/def.conf
+echo "initrd /initramfs-linux.img" >> /boot/loader/entries/def.conf
 
 lsblk
-read -p "select a disk (sda1)" disk
+read -p "select a disk (sda1): " disk
 
-# add boot drive to def.conf
+# Add boot drive to def.conf
 echo "options root=PARTUUID=$(blkid -s PARTUUID -o value /dev/$disk) rw nvidia-drm.modeset=1" >> /boot/loader/entries/def.conf
 
 # GRUB
-pacman -S grub efibootmgr dostools os-prober mtools
+pacman -S --noconfirm grub efibootmgr dosfstools os-prober mtools
 nano /etc/default/grub # add GRUB_CMDLINE_LINUX="nvidia-drm.modeset=1"
-grub-install  --target=x86_64-efi --bootloader-id=grub_efi --efi-directory=/boot/ --recheck
+grub-install --target=x86_64-efi --bootloader-id=grub_efi --efi-directory=/boot/ --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
