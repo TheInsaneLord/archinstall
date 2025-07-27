@@ -9,7 +9,7 @@ Window_manager_choice=${Window_manager_choice,,}  # Convert to lowercase
 if [[ "$Window_manager_choice" == "wayland" ]]; then
     echo "Installing Wayland environment..."
     #sudo pacman -S --noconfirm wayland wlroots qt5-wayland qt6-wayland xorg-xwayland xwayland
-    sudo pacman -S --noconfirm wayland qt5-wayland qt6-wayland xorg-xwayland
+    sudo pacman -S --noconfirm wayland qt5-wayland qt6-wayland xorg-xwayland kscreen
     sudo pacman -S --noconfirm sway swaybg swaylock swayidle waybar wofi grim slurp mako foot
 else
     echo "Installing X11 environment..."
