@@ -48,7 +48,7 @@ if [[ "$flatpak_choice" =~ ^[Yy]$ ]] || [[ -z "$flatpak_choice" ]]; then
 
   # Install Flatpak applications
   flatpak install -y flathub com.discordapp.Discord
-  flatpak install -y flathub com.google.Chrome
+  flatpak install flathub com.google.Chrome
   flatpak install -y flathub org.prismlauncher.PrismLauncher
   flatpak install -y flathub com.spotify.Client
   flatpak install -y flathub org.inkscape.Inkscape
