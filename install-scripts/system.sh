@@ -145,16 +145,5 @@ host=${host:-mypc-01}
 
 echo "$host" > /etc/hostname
 
-# install nvidia drivers
-read -p "Create a main user? (Y/n) " user_choice
-if [[ "$user_choice" =~ ^[Yy]$ ]] || [[ -z "$user_choice" ]]; then
-    sudo pacman -S nvidia-dkms nvidia-utils opencl-nvidia libglvnd lib32-libglvnd lib32-nvidia-utils lib32-opencl-nvidia nvidia-settings
-    sudo cp -v confs/mkinitcpio.conf /etc/mkinitcpio.conf # copy mkinitcpio.conf
-else
-    echo 'Skippinf Nvidia Drivers'
-fi
-
-
-
 echo
 echo "Installation and configuration complete!"
