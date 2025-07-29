@@ -49,7 +49,7 @@ echo "sudo usermod -aG lp <username>"
 
 # Audio setup for Pipewire
 sudo pacman -S --noconfirm pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber qjackctl
-systemctl enable --now pipewire pipewire.socket wireplumber
+#systemctl enable --now pipewire pipewire.socket wireplumber
 
 # Prompt for Flatpak installation
 read -p "Do you want to install Flatpaks? (Y/n) " flatpak_choice
