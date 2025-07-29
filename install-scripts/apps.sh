@@ -10,19 +10,19 @@ sudo cp -v confs/pacman.conf /etc/pacman.conf
 echo "Refreshing all package databases (including multilib)…"
 pacman -Syy --noconfirm
 
+# Install core applications
+main_apps=(konsole firefox steam kate dolphin fastfetch git bash-completion flatpak bashtop pacman-contrib man ufw)
+
+sudo pacman -S --noconfirm "${main_apps[@]}"
+
 # install nvidia drivers
-read -p "install prprietery drivers for nvidia? (Y/n) " user_choic
-if [[ "$user_choice" =~ ^[Yy]$ ]] || [[ -z "$user_choice" ]]; then
+read -p "install prprietery drivers for nvidia? (Y/n) " nvidia_choic
+if [[ "$nvidia_choice" =~ ^[Yy]$ ]] || [[ -z "$_choice" ]]; then
     sudo pacman -S nvidia-dkms nvidia-utils opencl-nvidia libglvnd lib32-libglvnd lib32-nvidia-utils lib32-opencl-nvidia nvidia-settings
     sudo cp -v confs/mkinitcpio.conf /etc/mkinitcpio.conf # copy mkinitcpio.conf
 else
     echo 'Skippinf Nvidia Drivers'
 fi
-
-# Install core applications
-main_apps=(konsole firefox steam kate dolphin fastfetch git bash-completion flatpak bashtop pacman-contrib man ufw)
-
-sudo pacman -S --noconfirm "${main_apps[@]}"
 
 # Install optional apps
 opt_apps=(traceroute libreoffice-fresh p7zip python3 python-pip filezilla unison)
