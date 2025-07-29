@@ -126,6 +126,11 @@ if [[ "$user_choice" =~ ^[Yy]$ ]] || [[ -z "$user_choice" ]]; then
 
   echo "Set password for $main_user:"
   passwd "$main_user"
+  chown -R "$main_user":"$main_user" /home/"$main_user" # update perms in the event the folder alredy exists
+  
+  # set admin password //temp add may change later. : Jul 23 2025
+  read -p "Enter Admin Password: " adminpass
+  passwd "$adminpass"
 
   # Ensure sudoers wheel group is enabled
   #sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
