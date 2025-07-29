@@ -60,16 +60,17 @@ if [[ "$flatpak_choice" =~ ^[Yy]$ ]] || [[ -z "$flatpak_choice" ]]; then
   sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
   # Install Flatpak applications
-  flatpak install -y flathub com.discordapp.Discord
-  flatpak install -y flathub com.google.Chrome
-  flatpak install -y flathub org.prismlauncher.PrismLauncher
-  flatpak install -y flathub com.spotify.Client
-  flatpak install -y flathub org.inkscape.Inkscape
-  flatpak install -y flathub org.kde.krita
+  flatpak install -y com.discordapp.Discord
+  flatpak install -y com.google.Chrome
+  flatpak install -y org.prismlauncher.PrismLauncher
+  flatpak install -y com.spotify.Client
+  flatpak install -y org.inkscape.Inkscape
+  flatpak install -y org.kde.krita
   flatpak install -y flathub com.obsproject.Studio
   flatpak install -y flathub com.obsproject.Studio.Plugin.CompositeBlur
   flatpak install -y flathub com.obsproject.Studio.Plugin.AitumMultistream
   flatpak install -y flathub com.obsproject.Studio.Plugin.MoveTransition
+  flatpak install -y flathub org.godotengine.Godot
 
   echo "Flatpak installation complete."
 else
