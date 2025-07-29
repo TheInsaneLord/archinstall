@@ -33,7 +33,10 @@ if [[ "$opt_apps_choice" =~ ^[Yy]$ ]] || [[ -z "$opt_apps_choice" ]]; then
 else
   echo "optional apps skipped."
 fi
-  
+
+# install wine
+sudo pacman -S --noconfirm wine wine-mono wine-gecko winetricks lib32-mesa lib32-nvidia-utils lib32-libpulse lib32-alsa-plugins lib32-openal lib32-vkd3d
+ 
 # Bluetooth support
 sudo pacman -S --noconfirm bluez bluez-utils bluez-deprecated-tools
 sudo systemctl enable bluetooth.service
