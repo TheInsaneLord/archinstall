@@ -16,12 +16,12 @@ main_apps=(konsole firefox steam kate dolphin fastfetch git bash-completion flat
 sudo pacman -S --noconfirm "${main_apps[@]}"
 
 # install nvidia drivers
-read -p "install prprietery drivers for nvidia? (Y/n) " nvidia_choic
-if [[ "$nvidia_choice" =~ ^[Yy]$ ]] || [[ -z "$_choice" ]]; then
-    sudo pacman -S nvidia-dkms nvidia-utils opencl-nvidia libglvnd lib32-libglvnd lib32-nvidia-utils lib32-opencl-nvidia nvidia-settings
-    sudo cp -v confs/mkinitcpio.conf /etc/mkinitcpio.conf # copy mkinitcpio.conf
+read -p "Install proprietary drivers for Nvidia? (Y/n) " nvidia_choice
+if [[ "$nvidia_choice" =~ ^[Yy]$ ]] || [[ -z "$nvidia_choice" ]]; then
+    sudo pacman -S --noconfirm nvidia-dkms nvidia-utils opencl-nvidia libglvnd lib32-libglvnd lib32-nvidia-utils lib32-opencl-nvidia nvidia-settings
+    sudo cp -v confs/mkinitcpio.conf /etc/mkinitcpio.conf
 else
-    echo 'Skippinf Nvidia Drivers'
+    echo 'Skipping Nvidia Drivers'
 fi
 
 # Install optional apps
