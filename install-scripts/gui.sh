@@ -8,12 +8,13 @@ Window_manager_choice=${Window_manager_choice,,}  # Convert to lowercase
 
 if [[ "$Window_manager_choice" == "wayland" ]]; then
     echo "Installing Wayland environment..."
-    #sudo pacman -S --noconfirm wayland wlroots qt5-wayland qt6-wayland xorg-xwayland xwayland
     sudo pacman -S --noconfirm wayland qt5-wayland qt6-wayland xorg-xwayland kscreen
     sudo pacman -S --noconfirm sway swaybg swaylock swayidle waybar wofi grim slurp mako foot
+    wayland_selected=true
 else
     echo "Installing X11 environment..."
-    sudo pacman -S --noconfirm xorg-twm xorg-xclock xterm xorg-apps xorg-server xorg-xinit
+    sudo pacman -S --noconfirm xorg-server xorg-xinit xorg-apps xorg-twm xorg-xclock xterm
+    x11_selected=true
 fi
 
 # Prompt for KDE or Gnome
@@ -21,12 +22,20 @@ read -p "Do you want KDE or Gnome? (kde/gnome, default: KDE) " Desktop_manager_c
 Desktop_manager_choice=${Desktop_manager_choice,,}  # Convert to lowercase
 
 if [[ "$Desktop_manager_choice" == "gnome" ]]; then
-    echo "Installing Gnome..."
+    echo "Installing GNOME..."
     sudo pacman -S --noconfirm gnome gnome-extra gdm
     sudo systemctl enable gdm.service
 elif [[ "$Desktop_manager_choice" == "kde" ]] || [[ -z "$Desktop_manager_choice" ]]; then
     echo "Installing KDE..."
-    sudo pacman -S --noconfirm plasma kde-applications sddm
+    
+    if [[ "$wayland_selected" == true ]]; then
+        sudo pacman -S --noconfirm plasma-meta plasma-wayland-session sddm
+    else
+        sudo pacman -S --noconfirm plasma-meta plasma-workspace-x11 sddm
+        # Optional: remove Wayland extras if already in system
+        sudo pacman -Rns --noconfirm plasma-wayland-session qt5-wayland qt6-wayland kwayland 2>/dev/null || true
+    fi
+
     sudo systemctl enable sddm.service
 else
     echo "Invalid input. Skipping desktop environment installation."
