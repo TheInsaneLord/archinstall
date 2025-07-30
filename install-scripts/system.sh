@@ -19,6 +19,7 @@ echo "KEYMAP=uk" | sudo tee /etc/vconsole.conf > /dev/null
 if [[ -f "confs/fstab" ]]; then
     echo "Appending secondary drives to fstab..."
     cat confs/fstab | sudo tee -a /etc/fstab > /dev/null
+    pacman -S --noconfirm ntfs-3g
 else
     echo "Warning: 'confs/fstab' not found! Skipping fstab setup."
 fi
