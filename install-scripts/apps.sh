@@ -15,6 +15,9 @@ main_apps=(konsole firefox steam blender ntfs-3g kate dolphin fastfetch git bash
 
 sudo pacman -S --noconfirm "${main_apps[@]}"
 
+# Enable application
+systemctl enable ufw.service
+
 # install nvidia drivers
 read -p "Install proprietary drivers for Nvidia? (Y/n) " nvidia_choice
 if [[ "$nvidia_choice" =~ ^[Yy]$ ]] || [[ -z "$nvidia_choice" ]]; then
@@ -52,7 +55,6 @@ echo "sudo usermod -aG lp <username>"
 
 # Audio setup for Pipewire
 sudo pacman -S --noconfirm pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber qjackctl
-#systemctl enable --now pipewire pipewire.socket wireplumber
 
 # Prompt for Flatpak installation
 read -p "Do you want to install Flatpaks? (Y/n) " flatpak_choice
