@@ -28,7 +28,7 @@ else
 fi
 
 # Install optional apps
-opt_apps=(traceroute libreoffice-fresh p7zip python3 python-pip filezilla unison)
+opt_apps=(traceroute libreoffice-fresh p7zip python3 python-pip filezilla unison filezilla openrgb)
 
 read -p "Do you want to install optional apps? (Y/n) " opt_apps_choice
 if [[ "$opt_apps_choice" =~ ^[Yy]$ ]] || [[ -z "$opt_apps_choice" ]]; then
