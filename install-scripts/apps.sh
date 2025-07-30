@@ -11,7 +11,7 @@ echo "Refreshing all package databases (including multilib)…"
 pacman -Syy --noconfirm
 
 # Install core applications
-main_apps=(konsole firefox steam blender ntfs-3g kate dolphin fastfetch git bash-completion flatpak bashtop pacman-contrib man ufw)
+main_apps=(konsole firefox steam blender ntfs-3g kate dolphin fastfetch git bash-completion flatpak bashtop pacman-contrib man ufw openssh)
 
 sudo pacman -S --noconfirm "${main_apps[@]}"
 
