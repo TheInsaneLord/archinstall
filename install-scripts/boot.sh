@@ -26,5 +26,18 @@ echo "options root=PARTUUID=$(blkid -s PARTUUID -o value /dev/$disk) rw nvidia-d
 # GRUB setup
 pacman -S --noconfirm grub efibootmgr dosfstools os-prober mtools
 nano /etc/default/grub  # Add GRUB_CMDLINE_LINUX="nvidia-drm.modeset=1"
+
+# OS probe 
+# Enable os-prober in GRUB config
+if grep -q "^#GRUB_DISABLE_OS_PROBER=true" /etc/default/grub; then
+    sed -i 's/^#GRUB_DISABLE_OS_PROBER=true/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub
+elif ! grep -q "^GRUB_DISABLE_OS_PROBER=" /etc/default/grub; then
+    echo "GRUB_DISABLE_OS_PROBER=false" >> /etc/default/grub
+else
+    sed -i 's/^GRUB_DISABLE_OS_PROBER=.*/GRUB_DISABLE_OS_PROBER=false/' /etc/default/grub
+fi
+
+
+# Grub setup
 grub-install --target=x86_64-efi --bootloader-id=grub_efi --efi-directory=/boot/ --recheck
 grub-mkconfig -o /boot/grub/grub.cfg
