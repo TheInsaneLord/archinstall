@@ -123,7 +123,7 @@ if [[ "$user_choice" =~ ^[Yy]$ ]] || [[ -z "$user_choice" ]]; then
   main_user=${main_user:-mypcuser}
 
   # Create the user, its own group, and add to wheel/storage/power
-  useradd -m -U -G wheel,storage,power -s /bin/bash "$main_user"
+  useradd -m -U -G wheel,storage,power,users -s /bin/bash "$main_user"
 
   echo "Set password for $main_user:"
   passwd "$main_user"
