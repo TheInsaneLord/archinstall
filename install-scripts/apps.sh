@@ -27,6 +27,50 @@ else
     echo 'Skipping Nvidia Drivers'
 fi
 
+# ---- AMD GPU drivers (place this block after the Nvidia section and before optional apps) ----
+read -p "Install drivers for AMD GPU? (Y/n) " amd_choice
+if [[ "$amd_choice" =~ ^[Yy]$ ]] || [[ -z "$amd_choice" ]]; then
+  echo "Select AMD driver family:"
+  echo "  1) AMDGPU (most GCN 3+/Polaris, Vega, RDNA/RDNA2/RDNA3 — recommended)"
+  echo "  2) Radeon (legacy/older GPUs)"
+  read -p "Enter 1 or 2 [1]: " amd_family
+  amd_family=${amd_family:-1}
+
+  if [[ "$amd_family" == "1" ]]; then
+    # Base modern AMDGPU stack (with 32-bit where applicable)
+    amd_pkgs=(mesa lib32-mesa libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau xf86-video-amdgpu)
+    # Choose Vulkan implementation
+    echo "Choose Vulkan driver:"
+    echo "  1) RADV (Mesa) — recommended"
+    echo "  2) AMDVLK (official)"
+    read -p "Enter 1 or 2 [1]: " vk_choice
+    vk_choice=${vk_choice:-1}
+    if [[ "$vk_choice" == "2" ]]; then
+      amd_pkgs+=("amdvlk" "lib32-amdvlk")
+    else
+      amd_pkgs+=("vulkan-radeon" "lib32-vulkan-radeon")
+    fi
+
+    # Optional OpenCL (ROCm)
+    read -p "Install OpenCL runtime (ROCm) for AMD? (y/N) " opencl_choice
+    if [[ "$opencl_choice" =~ ^[Yy]$ ]]; then
+      amd_pkgs+=("rocm-opencl-runtime" "ocl-icd" "opencl-headers")
+      # Note: 32-bit OpenCL for AMD is generally not provided on Arch.
+    fi
+
+    sudo pacman -S --noconfirm "${amd_pkgs[@]}"
+
+  elif [[ "$amd_family" == "2" ]]; then
+    # Legacy Radeon stack (no Vulkan on many older GPUs)
+    sudo pacman -S --noconfirm mesa lib32-mesa libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau xf86-video-ati
+  else
+    echo "Invalid selection. Skipping AMD driver installation."
+  fi
+else
+  echo "Skipping AMD drivers"
+fi
+# ---- end AMD GPU drivers ----
+
 # Install optional apps
 opt_apps=(vlc traceroute libreoffice-fresh p7zip python3 python-pip filezilla unison filezilla openrgb jdk-openjdk goverlay mangohud lib32-mangohud)
 
