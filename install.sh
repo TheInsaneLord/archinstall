@@ -12,24 +12,78 @@ echo "Available scripts."
 ls  install-scripts
 echo " "
 
-#Ask user if they have nvida GPU
+nvidia_gpu=false
+amd_gpu=false
+
+# Ask user if they have an NVIDIA GPU
 read -rp "Do you have an NVIDIA GPU? (Y/n) " nvidia_choice
 nvidia_choice=${nvidia_choice:-Y}
-if [[ "${nvidia_choice,,}" == "y" ]]; then
-  nvidia_gpu=true
-else
-  nvidia_gpu=false
+nvidia_gpu=$([[ "${nvidia_choice,,}" == "y" ]] && echo true || echo false)
+
+# Ask user if they have an AMD GPU
+read -rp "Do you have an AMD GPU? (Y/n) " amd_choice
+amd_choice=${amd_choice:-Y}
+amd_gpu=$([[ "${amd_choice,,}" == "y" ]] && echo true || echo false)
+
+# If both selected, ask which one to use
+while [[ "$nvidia_gpu" == true && "$amd_gpu" == true ]]; do
+  echo
+  echo "Both NVIDIA and AMD were selected. This installer supports one primary GPU."
+  echo "  1) NVIDIA"
+  echo "  2) AMD"
+  read -rp "Enter 1 or 2 [1]: " gpu_sel
+  gpu_sel=${gpu_sel:-1}
+  if [[ "$gpu_sel" == "1" ]]; then
+    nvidia_gpu=true; amd_gpu=false
+  else
+    nvidia_gpu=false; amd_gpu=true
+  fi
+done
+
+# If neither selected, confirm headless/server install
+if [[ "$nvidia_gpu" == false && "$amd_gpu" == false ]]; then
+  echo
+  read -rp "No GPU selected. Proceed as headless/server install? (Y/n) " headless_ans
+  headless_ans=${headless_ans:-Y}
+  if [[ "${headless_ans,,}" != "y" ]]; then
+    echo "Okay, let's choose again."
+    # re-ask
+    read -rp "Do you have an NVIDIA GPU? (Y/n) " nvidia_choice
+    nvidia_choice=${nvidia_choice:-Y}
+    nvidia_gpu=$([[ "${nvidia_choice,,}" == "y" ]] && echo true || echo false)
+
+    read -rp "Do you have an AMD GPU? (Y/n) " amd_choice
+    amd_choice=${amd_choice:-Y}
+    amd_gpu=$([[ "${amd_choice,,}" == "y" ]] && echo true || echo false)
+
+    # enforce single-GPU again
+    while [[ "$nvidia_gpu" == true && "$amd_gpu" == true ]]; do
+      echo
+      echo "Both NVIDIA and AMD were selected. Which one do you want to use?"
+      echo "  1) NVIDIA"
+      echo "  2) AMD"
+      read -rp "Enter 1 or 2 [1]: " gpu_sel
+      gpu_sel=${gpu_sel:-1}
+      if [[ "$gpu_sel" == "1" ]]; then
+        nvidia_gpu=true; amd_gpu=false
+      else
+        nvidia_gpu=false; amd_gpu=true
+      fi
+    done
+  fi
 fi
 
-export nvidia_gpu
+export nvidia_gpu amd_gpu
 echo "nvidia_gpu is set to: $nvidia_gpu"
+echo "amd_gpu is set to: $amd_gpu"
 
-# warn if not in arch-chroot, but don’t bail out
-if ! grep -q '/mnt ' /proc/1/mountinfo; then
-  echo "⚠Warning: you’re not inside an arch-chroot—some operations may fail."
-  echo "   Proceeding anyway; make sure you’ve already run arch-chroot /mnt"
-  # no exit here, script will continue
+
+# Warn if likely not in arch-chroot (non-fatal)
+if ! mountpoint -q /; then
+  echo "⚠ Warning: / is not a mountpoint. Are you inside arch-chroot?"
+  echo "   Proceeding anyway; make sure you've already run: arch-chroot /mnt"
 fi
+
 
 # Ensure the install-scripts directory exists
 if [[ ! -d "install-scripts" ]]; then
