@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# install GPU drivers
+nvidia_gpu=false
+amd_gpu=false
+
 set -e  # Exit script on error
 
 echo "Installing Default Applications..."
@@ -11,25 +15,66 @@ echo "Refreshing all package databases (including multilib)…"
 pacman -Syy --noconfirm
 
 # Install core applications
-main_apps=(konsole firefox steam blender ntfs-3g kate dolphin fastfetch git bash-completion flatpak bashtop pacman-contrib man ufw openssh wget)
+main_apps=(konsole firefox steam blender ntfs-3g kate dolphin fastfetch git bash-completion flatpak bashtop pacman-contrib man ufw openssh wget tree)
 
 sudo pacman -S --noconfirm "${main_apps[@]}"
 
 # Enable application
 systemctl enable ufw.service
 
-# install nvidia drivers
+# install GPU drivers
+# ---- Nvidia GPU drivers ----
 read -p "Install proprietary drivers for Nvidia? (Y/n) " nvidia_choice
 if [[ "$nvidia_choice" =~ ^[Yy]$ ]] || [[ -z "$nvidia_choice" ]]; then
-    sudo pacman -S --noconfirm nvidia-dkms nvidia-utils opencl-nvidia libglvnd lib32-libglvnd lib32-nvidia-utils lib32-opencl-nvidia nvidia-settings
+  nvidia_gpu=true
+  echo "Select Nvidia driver type:"
+  echo "  1) Latest (recommended for modern GPUs, 1000+ series)"
+  echo "  2) Legacy 470xx (for Kepler GPUs)"
+  echo "  3) Legacy 390xx (for older Fermi GPUs)"
+  read -p "Enter 1, 2 or 3 [1]: " nvidia_family
+  nvidia_family=${nvidia_family:-1}
+
+  if [[ "$nvidia_family" == "1" ]]; then
+    nvidia_pkgs=(nvidia-dkms nvidia-utils libglvnd lib32-libglvnd lib32-nvidia-utils nvidia-settings)
+
+    # Vulkan
+    echo "Choose Vulkan driver:"
+    echo "  1) Included in nvidia-utils (recommended)"
+    echo "  2) Nvidia Vulkan Beta driver (AUR)"
+    read -p "Enter 1 or 2 [1]: " vk_choice
+    vk_choice=${vk_choice:-1}
+    if [[ "$vk_choice" == "2" ]]; then
+      echo "Note: Vulkan beta drivers are only in AUR, not pacman."
+    fi
+
+    # OpenCL
+    read -p "Install Nvidia OpenCL support? (Y/n) " opencl_choice
+    if [[ "$opencl_choice" =~ ^[Yy]$ ]] || [[ -z "$opencl_choice" ]]; then
+      nvidia_pkgs+=(opencl-nvidia lib32-opencl-nvidia)
+    fi
+
+    sudo pacman -S --noconfirm "${nvidia_pkgs[@]}"
     sudo cp -v confs/mkinitcpio.conf /etc/mkinitcpio.conf
+
+  elif [[ "$nvidia_family" == "2" ]]; then
+    sudo pacman -S --noconfirm nvidia-470xx-dkms nvidia-470xx-utils lib32-nvidia-470xx-utils opencl-nvidia-470xx nvidia-470xx-settings
+
+  elif [[ "$nvidia_family" == "3" ]]; then
+    sudo pacman -S --noconfirm nvidia-390xx-dkms nvidia-390xx-utils lib32-nvidia-390xx-utils opencl-nvidia-390xx nvidia-390xx-settings
+
+  else
+    echo "Invalid selection. Skipping Nvidia driver installation."
+    nvidia_gpu=false
+  fi
 else
-    echo 'Skipping Nvidia Drivers'
+  echo "Skipping Nvidia Drivers"
 fi
+# ---- end Nvidia GPU drivers ----
 
 # ---- AMD GPU drivers (place this block after the Nvidia section and before optional apps) ----
 read -p "Install drivers for AMD GPU? (Y/n) " amd_choice
 if [[ "$amd_choice" =~ ^[Yy]$ ]] || [[ -z "$amd_choice" ]]; then
+  amd_gpu=true
   echo "Select AMD driver family:"
   echo "  1) AMDGPU (most GCN 3+/Polaris, Vega, RDNA/RDNA2/RDNA3 — recommended)"
   echo "  2) Radeon (legacy/older GPUs)"
@@ -72,18 +117,30 @@ fi
 # ---- end AMD GPU drivers ----
 
 # Install optional apps
-opt_apps=(vlc traceroute libreoffice-fresh p7zip python3 python-pip filezilla unison filezilla openrgb jdk-openjdk goverlay mangohud lib32-mangohud)
+opt_apps=(vlc traceroute libreoffice-fresh p7zip python3 python-pip filezilla unison openrgb jdk-openjdk goverlay mangohud lib32-mangohud)
 
 read -p "Do you want to install optional apps? (Y/n) " opt_apps_choice
 if [[ "$opt_apps_choice" =~ ^[Yy]$ ]] || [[ -z "$opt_apps_choice" ]]; then
-  sudo pacman -S --noconfirm "${opt_apps[0]}"
+  sudo pacman -S --noconfirm "${opt_apps[@]}"
 else
   echo "optional apps skipped."
 fi
 
 # install wine
-sudo pacman -S --noconfirm wine wine-mono wine-gecko winetricks lib32-mesa lib32-nvidia-utils lib32-libpulse lib32-alsa-plugins lib32-openal lib32-vkd3d
- 
+wine_pkgs=(wine wine-mono wine-gecko winetricks lib32-mesa lib32-libpulse lib32-alsa-plugins lib32-openal lib32-vkd3d)
+
+if [[ "$nvidia_gpu" == true ]]; then
+  wine_pkgs+=(lib32-nvidia-utils)
+elif [[ "$amd_gpu" == true ]]; then
+  wine_pkgs+=(lib32-vulkan-radeon)
+fi
+
+sudo pacman -S --noconfirm "${wine_pkgs[@]}"
+
+# Install croni
+sudo pacman -S --noconfirm cronie
+sudo systemctl enable cronie --now
+
 # Bluetooth support
 sudo pacman -S --noconfirm bluez bluez-utils bluez-deprecated-tools
 sudo systemctl enable bluetooth.service
@@ -110,9 +167,7 @@ if [[ "$flatpak_choice" =~ ^[Yy]$ ]] || [[ -z "$flatpak_choice" ]]; then
 
   # Install Flatpak applications
   flatpak install -y com.discordapp.Discord
-  flatpak install -y com.google.Chrome
   flatpak install -y org.prismlauncher.PrismLauncher
-  flatpak install -y com.spotify.Client
   flatpak install -y org.inkscape.Inkscape
   flatpak install -y org.kde.krita
   flatpak install -y flathub com.obsproject.Studio
@@ -122,6 +177,8 @@ if [[ "$flatpak_choice" =~ ^[Yy]$ ]] || [[ -z "$flatpak_choice" ]]; then
   flatpak install -y flathub org.godotengine.Godot
 
   echo "Flatpak installation complete."
+  echo "install problematic apps on your own. [Spotify, Chrome]"
+  
 else
   echo "Flatpak installation skipped."
 fi
