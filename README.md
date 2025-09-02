@@ -24,8 +24,8 @@ Before running this script, ensure:
 ## 🛠️ Installation & Usage
 ### 1️⃣ Clone the Repository
 ```sh
-git clone https://github.com/TheInsaneLord/arch-install.git
-cd arch-install
+git clone https://github.com/TheInsaneLord/archinstall.git
+cd archinstall
 ```
 
 ### 2️⃣ Make the Script Executable
