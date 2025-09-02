@@ -13,7 +13,7 @@ if [[ "$Window_manager_choice" == "wayland" ]]; then
     wayland_selected=true
 else
     echo "Installing X11 environment..."
-    sudo pacman -S --noconfirm xorg-server xorg-xinit xorg-apps xorg-twm xorg-xclock xterm
+    sudo pacman -S --noconfirm xorg-server xorg-xinit xorg-apps xorg-twm xorg-xclock xterm plasma-x11-session kwin-x11
     x11_selected=true
 fi
 
