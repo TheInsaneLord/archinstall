@@ -8,12 +8,14 @@ Window_manager_choice=${Window_manager_choice,,}  # Convert to lowercase
 
 if [[ "$Window_manager_choice" == "wayland" ]]; then
     echo "Installing Wayland environment..."
-    sudo pacman -S --noconfirm wayland qt5-wayland qt6-wayland xorg-xwayland kscreen
+    sudo pacman -S --noconfirm wayland plasma-workspace kwin qt5-wayland qt6-wayland xorg-xwayland kscreen
+    sudo pacman -S --noconfirm xdg-desktop-portal xdg-desktop-portal-kde wl-clipboard
     sudo pacman -S --noconfirm sway swaybg swaylock swayidle waybar wofi grim slurp mako foot
     wayland_selected=true
 else
     echo "Installing X11 environment..."
     sudo pacman -S --noconfirm xorg-server xorg-xinit xorg-apps xorg-twm xorg-xclock xterm plasma-x11-session kwin-x11
+    sudo pacman -S --noconfirm xdg-desktop-portal xdg-desktop-portal-kde wl-clipboard
     x11_selected=true
 fi
 
