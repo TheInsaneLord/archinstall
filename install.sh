@@ -6,7 +6,7 @@ echo "* Arch Install Script *"
 echo "* By The Insane Lord *"
 echo "* This script will configure your Arch system. *"
 echo "* Make sure this script is ran after running arch-chroot *"
-echo "* Version: 2.0 - Updated last: 2025 *"
+echo "* Version: 3.0 - Updated last: 2025 *"
 
 echo "Available scripts."
 ls  install-scripts
