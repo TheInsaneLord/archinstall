@@ -170,11 +170,15 @@ if [[ "$flatpak_choice" =~ ^[Yy]$ ]] || [[ -z "$flatpak_choice" ]]; then
   flatpak install -y org.prismlauncher.PrismLauncher
   flatpak install -y org.inkscape.Inkscape
   flatpak install -y org.kde.krita
+  flatpak install -y flathub org.godotengine.Godot
+
+  # OBS and OBS plugins
   flatpak install -y flathub com.obsproject.Studio
   flatpak install -y flathub com.obsproject.Studio.Plugin.CompositeBlur
   flatpak install -y flathub com.obsproject.Studio.Plugin.AitumMultistream
   flatpak install -y flathub com.obsproject.Studio.Plugin.MoveTransition
-  flatpak install -y flathub org.godotengine.Godot
+  flatpak install -y flathub com.obsproject.Studio.Plugin.waveform 
+  
 
   echo "Flatpak installation complete."
   echo "install problematic apps on your own. [Spotify, Chrome]"
