@@ -171,7 +171,10 @@ if [[ "$flatpak_choice" =~ ^[Yy]$ ]] || [[ -z "$flatpak_choice" ]]; then
   flatpak install -y org.inkscape.Inkscape
   flatpak install -y org.kde.krita
   flatpak install -y flathub org.godotengine.Godot
-
+  flatpak install -y com.github.Matoking.protontricks
+  flatpak install -y io.github.streetpea.Chiaki4deck
+  flatpak install -y org.kde.krita
+  
   # OBS and OBS plugins
   flatpak install -y flathub com.obsproject.Studio
   flatpak install -y flathub com.obsproject.Studio.Plugin.CompositeBlur
