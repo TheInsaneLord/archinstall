@@ -155,6 +155,7 @@ echo "If you need printer access, add the user to the 'lp' group:"
 echo "sudo usermod -aG lp <username>"
 
 # Audio setup for Pipewire
+sudo pacman -Rdd jack2
 sudo pacman -S --noconfirm pipewire pipewire-alsa pipewire-pulse pipewire-jack wireplumber qjackctl
 
 # Prompt for Flatpak installation
