@@ -31,7 +31,7 @@ elif [[ "$Desktop_manager_choice" == "kde" ]] || [[ -z "$Desktop_manager_choice"
     echo "Installing KDE..."
     
     if [[ "$wayland_selected" == true ]]; then
-        sudo pacman -S --noconfirm plasma-meta plasma-wayland-session sddm
+        sudo pacman -S --noconfirm plasma-meta plasma-meta plasma-wayland-session sddm
     else
         sudo pacman -S --noconfirm plasma-meta plasma-workspace-x11 sddm
         # Optional: remove Wayland extras if already in system
