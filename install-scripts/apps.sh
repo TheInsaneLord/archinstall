@@ -117,7 +117,7 @@ fi
 # ---- end AMD GPU drivers ----
 
 # Install optional apps
-opt_apps=(vlc traceroute libreoffice-fresh p7zip python3 python-pip filezilla unison openrgb jdk-openjdk goverlay mangohud lib32-mangohud rsync)
+opt_apps=(vlc traceroute libreoffice-still p7zip python3 python-pip filezilla unison openrgb jdk-openjdk goverlay mangohud lib32-mangohud rsync)
 
 read -p "Do you want to install optional apps? (Y/n) " opt_apps_choice
 if [[ "$opt_apps_choice" =~ ^[Yy]$ ]] || [[ -z "$opt_apps_choice" ]]; then
