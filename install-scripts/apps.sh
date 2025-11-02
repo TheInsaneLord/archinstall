@@ -162,8 +162,10 @@ sudo pacman -S --noconfirm pipewire pipewire-alsa pipewire-pulse pipewire-jack w
 read -p "Do you want to install Flatpaks? (Y/n) " flatpak_choice
 if [[ "$flatpak_choice" =~ ^[Yy]$ ]] || [[ -z "$flatpak_choice" ]]; then
   echo "Installing Flatpak packages..."
-  
+
+  flat_depend=(noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-dejavu) 
   # Ensure Flatpak is initialized
+  sudo pacman -S --noconfirm "${flat_depend[@]}"
   sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 
   # Install Flatpak applications
