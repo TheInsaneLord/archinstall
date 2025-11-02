@@ -16,8 +16,13 @@ echo "Setting keyboard layout to UK..."
 echo "KEYMAP=uk" | sudo tee /etc/vconsole.conf > /dev/null
 
 # Setup locale gen
-cp -v confs/locale.gen /etc/locale.gen
-/etc/pacman.d/hooks
+if [[ -f "confs/locale.gen" ]]; then
+    cp -v confs/locale.gen /etc/locale.gen
+    locale-gen
+    echo "LANG=en_GB.UTF-8" >> /etc/locale.conf
+else
+    echo "Warning: 'confs/locale.gen' not found! Skipping locale.gen setup."
+fi
 
 # Append fstab entries for secondary drives
 if [[ -f "confs/fstab" ]]; then
