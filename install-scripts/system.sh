@@ -15,6 +15,10 @@ echo
 echo "Setting keyboard layout to UK..."
 echo "KEYMAP=uk" | sudo tee /etc/vconsole.conf > /dev/null
 
+# Setup locale gen
+cp -v confs/locale.gen /etc/locale.gen
+/etc/pacman.d/hooks
+
 # Append fstab entries for secondary drives
 if [[ -f "confs/fstab" ]]; then
     echo "Appending secondary drives to fstab..."
