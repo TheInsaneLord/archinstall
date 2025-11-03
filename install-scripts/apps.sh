@@ -139,7 +139,7 @@ sudo pacman -S --noconfirm "${wine_pkgs[@]}"
 
 # Install croni
 sudo pacman -S --noconfirm cronie
-sudo systemctl enable cronie --now
+sudo systemctl enable cronie
 
 # Bluetooth support
 sudo pacman -S --noconfirm bluez bluez-utils bluez-deprecated-tools
