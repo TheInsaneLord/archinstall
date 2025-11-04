@@ -123,6 +123,17 @@ else
     echo "Skipping sg-module."
 fi
 
+read -p "Do you need Bluetooth (Y/n) " sgmodule_choice
+if [[ "$blue_choice" =~ ^[Yy]$ ]] || [[ -z "$blue_choice" ]]; then
+    if [[ -f "confs/bluetooth_input.conf" ]]; then
+        cp -v confs/bluetooth_input.conf /etc/bluetooth/input.conf
+        pacman -S bluez bluez-utils bluez-deprecated-tools blueman
+        systemctl enable bluetooth.service
+    else
+        echo"Error: confs/bluetooth_input.conf not found! Skipping installation." 
+else
+    echo "Skipping Bluetooth."
+fi
 
 # Base system conf I.e. users and system settings
 read -p "Create a main user? (Y/n) " user_choice
