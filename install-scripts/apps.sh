@@ -83,7 +83,7 @@ if [[ "$amd_choice" =~ ^[Yy]$ ]] || [[ -z "$amd_choice" ]]; then
 
   if [[ "$amd_family" == "1" ]]; then
     # Base modern AMDGPU stack (with 32-bit where applicable)
-    amd_pkgs=(mesa lib32-mesa libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau xf86-video-amdgpu)
+    amd_pkgs=(mesa lib32-mesa libva-mesa-driver lib32-libva-mesa-driver mesa-vdpau lib32-mesa-vdpau xf86-video-amdgpu vlc)
     # Choose Vulkan implementation
     echo "Choose Vulkan driver:"
     echo "  1) RADV (Mesa) — recommended"
@@ -117,7 +117,7 @@ fi
 # ---- end AMD GPU drivers ----
 
 # Install optional apps
-opt_apps=(vlc traceroute libreoffice-still p7zip python3 python-pip filezilla unison openrgb jdk-openjdk goverlay mangohud lib32-mangohud rsync)
+opt_apps=(traceroute libreoffice-still p7zip python3 python-pip filezilla unison openrgb jdk-openjdk goverlay mangohud lib32-mangohud rsync)
 
 read -p "Do you want to install optional apps? (Y/n) " opt_apps_choice
 if [[ "$opt_apps_choice" =~ ^[Yy]$ ]] || [[ -z "$opt_apps_choice" ]]; then
