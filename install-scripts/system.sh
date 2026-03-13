@@ -106,6 +106,17 @@ sudo pacman -S --noconfirm nano
 echo "EDITOR=/usr/bin/nano" | sudo tee -a /etc/environment > /dev/null
 echo "VISUAL=/usr/bin/nano" | sudo tee -a /etc/environment > /dev/null
 
+# Enable Ftrim for SSD suport
+echo "Enabling weekly SSD TRIM..."
+sudo systemctl enable --now fstrim.timer
+
+read -rp "Run TRIM now as well? (Y/n) " trim_now_choice
+trim_now_choice=${trim_now_choice:-Y}
+if [[ "$trim_now_choice" =~ ^[Yy]$ ]]; then
+    echo "Running fstrim on all mounted filesystems..."
+    sudo fstrim -av
+fi
+
 # Optional sg-module for MakeMKV
 read -p "Do you need sg-module for MakeMKV? (Y/n) " sgmodule_choice
 if [[ "$sgmodule_choice" =~ ^[Yy]$ ]] || [[ -z "$sgmodule_choice" ]]; then
